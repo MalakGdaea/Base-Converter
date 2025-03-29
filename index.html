@@ -16,25 +16,26 @@
     <section id="convert-from">
         <span class="sub-title">FROM</span>
         <div class="buttons-container">
-            <button class="btn binary">Binary (2)</button>
-            <button class="btn octal">Octal (8)</button>
-            <button class="btn decimal">Decimal (10)</button>
-            <button class="btn hex">Hexadecimal (16) </button>
+            <button class="btn binary" data-base="2">Binary (2)</button>
+            <button class="btn octal" data-base="8">Octal (8)</button>
+            <button class="btn decimal" data-base="10">Decimal (10)</button>
+            <button class="btn hex" data-base="16">Hexadecimal (16) </button>
         </div>
     </section>
     <label for="number">Enter a number</label>
-    <input type="text" name="number" id="number" />
+    <input type="text" name="number" id="numberToConvert" />
     <section id="convert-to">
         <span class="sub-title">TO</span>
         <div class="buttons-container">
-            <button class="btn binary">Binary (2)</button>
-            <button class="btn octal">Octal (8)</button>
-            <button class="btn decimal">Decimal (10)</button>
-            <button class="btn hex">Hexadecimal (16) </button>
+            <button class="btn binary" data-base="2">Binary (2)</button>
+            <button class="btn octal" data-base="8">Octal (8)</button>
+            <button class="btn decimal" data-base="10">Decimal (10)</button>
+            <button class="btn hex" data-base="16">Hexadecimal (16) </button>
         </div>
     </section>
     <span class="sub-title">Result: </span><span id="result"></span>
     <button id="convert" class="btn">Convert</button>
+    <script src="main.js"></script>
 </body>
 
 </html>
