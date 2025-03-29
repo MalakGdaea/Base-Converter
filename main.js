@@ -38,6 +38,7 @@ const clearResult = function () {
 
 convertBtn.addEventListener("click", function () {
     numberToConvert = numberInput.value;
+    if (numberInput == "" || !sourceBase || !destinationBase) return;
     let isValid = isValidInput(sourceBase, numberToConvert);
     if (!isValid) {
         alert(`Not valid number in base ${sourceBase} `);
