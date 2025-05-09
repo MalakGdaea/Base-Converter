@@ -25,6 +25,7 @@ toButtons.forEach((btn) => btn.addEventListener("click", function () {
 }));
 
 const handleButtonClick = function (btn, siblingsBtns) {
+    // Give the selected button the class 'chosen'
     siblingsBtns.forEach((btn) => btn.classList.remove("chosen"));
     btn.classList.add("chosen");
     clearResult();
@@ -37,8 +38,8 @@ const clearResult = function () {
 }
 
 convertBtn.addEventListener("click", function () {
-    numberToConvert = numberInput.value;
-    if (numberInput == "" || !sourceBase || !destinationBase) return;
+    numberToConvert = numberInput.value.trim(); // trim removes whitespace from both ends of the string and returns a new string
+    if (numberToConvert == "" || !sourceBase || !destinationBase) return;
     let isValid = isValidInput(sourceBase, numberToConvert);
     if (!isValid) {
         alert(`Not valid number in base ${sourceBase} `);
@@ -48,14 +49,18 @@ convertBtn.addEventListener("click", function () {
     }
 });
 
-/* Optional : Verify if a number is valid for a given base. */
 const isValidInput = function (base, number) {
+    number = number.toUpperCase();
     for (let char of number) {
-        if (base === Base.BIN && (char !== '0' && char !== '1')) return false;
-        if (base === Base.OCT && (char < '0' || char > '7')) return false;
-        if (base === Base.DEC && (char < '0' || char > '9')) return false;
-        if (base === Base.HEX && !((char >= '0' && char <= '9') || (char >= 'A' && char <= 'F') || (char >= 'a' && char <= 'f'))) {
-            return false;
+        if (base === Base.HEX) {
+            const isHexDigit = !isNaN(char) && Number(char) < base;
+            const isHexLetter = hexToDecimal.hasOwnProperty(char);
+            if (!isHexDigit && !isHexLetter) {
+                return false;
+            }
+        } else {
+            if (isNaN(char) || Number(char) >= base)
+                return false;
         }
     }
     return true;
@@ -86,7 +91,7 @@ const convertFromBaseToDicimal = function (number, BASE) {
         }
         ones = parseInt(ones);
         result += ones * Math.pow(BASE, position);
-        number = number.slice(0, -1);
+        number = number.slice(0, -1); // returns the string without the last char
         position++;
     }
     return result;
