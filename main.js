@@ -46,11 +46,11 @@ convertBtn.addEventListener("click", function () {
     let isValid = isValidInput(sourceBase, numberToConvert);
     if (!isValid) {
         alert(`Not valid number in base ${sourceBase}!`);
-    } else {
-        let result = convertFromBaseToBase(numberToConvert, sourceBase, destinationBase);
-        displayResult(result);
-        clearInput();
+        return;
     }
+    let result = convertFromBaseToBase(numberToConvert, sourceBase, destinationBase);
+    displayResult(result);
+    clearInput();
 });
 
 const isValidInput = function (base, number) {
