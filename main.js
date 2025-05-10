@@ -1,10 +1,3 @@
-const Base = Object.freeze({
-    BIN: 2,
-    OCT: 8,
-    DEC: 10,
-    HEX: 16
-});
-const decimalToHex = { 10: 'A', 11: 'B', 12: 'C', 13: 'D', 14: 'E', 15: 'F' };
 const hexToDecimal = { 'A': 10, 'B': 11, 'C': 12, 'D': 13, 'E': 14, 'F': 15 };
 
 let sourceBase, destinationBase, numberToConvert;
@@ -16,16 +9,15 @@ const numberInput = document.getElementById("numberToConvert");
 
 fromButtons.forEach((btn) => btn.addEventListener("click", function () {
     sourceBase = Number(this.dataset.base);
-    handleButtonClick(this, fromButtons);
+    updateSelectionAndClearResult(this, fromButtons);
 }));
 
 toButtons.forEach((btn) => btn.addEventListener("click", function () {
     destinationBase = Number(this.dataset.base);
-    handleButtonClick(this, toButtons);
+    updateSelectionAndClearResult(this, toButtons);
 }));
 
-const handleButtonClick = function (btn, siblingsBtns) {
-    // Give the selected button the class 'chosen'
+const updateSelectionAndClearResult = function (btn, siblingsBtns) {
     siblingsBtns.forEach((btn) => btn.classList.remove("chosen"));
     btn.classList.add("chosen");
     clearResult();
@@ -38,75 +30,76 @@ const clearResult = function () {
 }
 
 convertBtn.addEventListener("click", function () {
-    numberToConvert = numberInput.value.trim(); // trim removes whitespace from both ends of the string and returns a new string
-    if (numberToConvert == "" || !sourceBase || !destinationBase) return;
+    numberToConvert = numberInput.value.trim();
+    if (numberToConvert == "") {
+        alert("Please enter a number to convert.");
+        return;
+    }
+    if (!sourceBase) {
+        alert("Please select the source base.");
+        return;
+    }
+    if (!destinationBase) {
+        alert("Please select the destination base.");
+        return;
+    }
     let isValid = isValidInput(sourceBase, numberToConvert);
     if (!isValid) {
-        alert(`Not valid number in base ${sourceBase} `);
+        alert(`Not valid number in base ${sourceBase}!`);
     } else {
         let result = convertFromBaseToBase(numberToConvert, sourceBase, destinationBase);
-        handleResult(result);
+        displayResult(result);
+        clearInput();
     }
 });
 
 const isValidInput = function (base, number) {
     number = number.toUpperCase();
     for (let char of number) {
-        if (base === Base.HEX) {
-            const isHexDigit = !isNaN(char) && Number(char) < base;
-            const isHexLetter = hexToDecimal.hasOwnProperty(char);
-            if (!isHexDigit && !isHexLetter) {
-                return false;
-            }
-        } else {
-            if (isNaN(char) || Number(char) >= base)
-                return false;
+        const digit = hexToDecimal[char] ?? parseInt(char);
+        if (isNaN(digit) || digit >= base) {
+            return false;
         }
     }
     return true;
 }
 
-const handleResult = function (result) {
+const displayResult = function (result) {
     const resultElement = clearResult();
-    resultElement.innerHTML = `${numberToConvert} <sub>${sourceBase}</sub> = ${result} <sub>${destinationBase}</sub>`;
+    resultElement.innerHTML = `${numberToConvert.toUpperCase()} <sub>${sourceBase}</sub> = ${result} <sub>${destinationBase}</sub>`;
+}
+
+const clearInput = function () {
     numberInput.value = "";
 }
 
 const convertFromBaseToBase = function (number, sourceBase, destinationBase) {
     if (sourceBase == destinationBase) {
-        return "" + number;
+        return number;
     }
     let decimalNumber = convertFromBaseToDicimal(number, sourceBase);
     return convertDecimalToBase(decimalNumber, destinationBase);
 }
 
-const convertFromBaseToDicimal = function (number, BASE) {
+const convertFromBaseToDicimal = function (number, base) {
+    number = number.toUpperCase();
     let result = 0;
-    let position = 0;
-    while (number != "") {
-        let ones = number.slice(-1);
-        ones = ones.toUpperCase(); // Handle lowercase letters in a hexadecimal base.
-        if (BASE == Base.HEX && hexToDecimal[ones]) {
-            ones = hexToDecimal[ones];
-        }
-        ones = parseInt(ones);
-        result += ones * Math.pow(BASE, position);
-        number = number.slice(0, -1); // returns the string without the last char
-        position++;
+    for (let i = 0; i < number.length; i++) {
+        const char = number[number.length - 1 - i];
+        const value = hexToDecimal[char] ?? parseInt(char);
+        result += value * Math.pow(base, i);
     }
     return result;
 }
 
-const convertDecimalToBase = function (number, BASE) {
+const convertDecimalToBase = function (number, base) {
+    const decimalToHex = { 10: 'A', 11: 'B', 12: 'C', 13: 'D', 14: 'E', 15: 'F' };
+    if (number == 0) return 0;
     let result = "";
-    if (number == 0) return "0";
     while (number > 0) {
-        let reminder = number % BASE;
-        if (BASE == Base.HEX && decimalToHex[reminder]) {
-            reminder = decimalToHex[reminder];
-        }
-        number = parseInt(number /= BASE);
-        result = reminder + result;
+        let remainder = number % base;
+        result = (decimalToHex[remainder] ?? remainder) + result;
+        number = Math.floor(number / base);
     }
     return result;
-}
+};
