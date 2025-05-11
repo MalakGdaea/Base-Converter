@@ -9,15 +9,15 @@ const numberInput = document.getElementById("numberToConvert");
 
 fromButtons.forEach((btn) => btn.addEventListener("click", function () {
     sourceBase = Number(this.dataset.base);
-    updateSelectionAndClearResult(this, fromButtons);
+    highlightSelectionAndClearResult(this, fromButtons);
 }));
 
 toButtons.forEach((btn) => btn.addEventListener("click", function () {
     destinationBase = Number(this.dataset.base);
-    updateSelectionAndClearResult(this, toButtons);
+    highlightSelectionAndClearResult(this, toButtons);
 }));
 
-const updateSelectionAndClearResult = function (btn, siblingsBtns) {
+const highlightSelectionAndClearResult = function (btn, siblingsBtns) {
     siblingsBtns.forEach((btn) => btn.classList.remove("chosen"));
     btn.classList.add("chosen");
     clearResult();
